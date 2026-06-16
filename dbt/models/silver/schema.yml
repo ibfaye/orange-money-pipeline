@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_orange_money__normalized_transactions
+    description: "Normalized, deduplicated, and enriched Orange Money transactions"
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: _quality_flag
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["PASS", "FAIL"]
+      - name: _date
+        tests:
+          - not_null
+      - name: _amount_bucket
+        tests:
+          - accepted_values:
+              values: ["MICRO", "SMALL", "MEDIUM", "LARGE", "XLARGE"]

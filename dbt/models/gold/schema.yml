@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: fct_orange_money__daily_summary
+    description: "Daily aggregated KPIs for Orange Money transactions — by date, region, and channel"
+    columns:
+      - name: _date
+        tests:
+          - not_null
+      - name: transaction_count
+        tests:
+          - not_null
+          - dbt_utils.at_least_one
+      - name: total_volume_xof
+        description: "Total transaction volume in XOF"
+      - name: success_rate
+        description: "Percentage of successful transactions"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+      - name: avg_latency_seconds
+        description: "Average processing latency in seconds"
+
+  - name: fct_orange_money__merchant_activity
+    description: "Daily merchant performance metrics"
+    columns:
+      - name: merchant_code
+        tests:
+          - not_null
+      - name: total_volume_xof
+        description: "Total merchant transaction volume in XOF"
+      - name: unique_customers
+        description: "Number of unique customers (by sender token)"
+      - name: success_rate
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100

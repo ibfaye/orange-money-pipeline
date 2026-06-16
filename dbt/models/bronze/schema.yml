@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: orange_money
+    database: orange_money
+    schema: bronze
+    tables:
+      - name: raw_transactions
+        description: "Raw Orange Money transactions ingested from API/mock generator"
+        columns:
+          - name: transaction_id
+            description: "Unique Orange Money transaction reference"
+            tests:
+              - unique
+              - not_null
+          - name: amount
+            description: "Transaction amount in XOF"
+            tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  max_value: 50000000
+                  inclusive: false
+          - name: initiated_at
+            description: "Transaction initiation timestamp (UTC)"
+            tests:
+              - not_null
+
+models:
+  - name: stg_orange_money__transactions
+    description: "Staging view over raw Orange Money transactions"
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: transaction_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["PAYMENT", "TRANSFER", "WITHDRAWAL", "DEPOSIT", "REFUND"]
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["SUCCESS", "PENDING", "FAILED", "REVERSED"]

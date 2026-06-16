@@ -1,0 +1,20 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored — never commit credentials
+
+project_prefix     = "orange-money"
+location           = "francecentral"  # or "westeurope"
+environment        = "dev"
+databricks_sku     = "premium"
+
+# Azure credentials (REQUIRED)
+azure_subscription_id = "00000000-0000-0000-0000-000000000000"
+azure_tenant_id       = "00000000-0000-0000-0000-000000000000"
+
+# Resource tags
+tags = {
+  Project     = "Orange Money Pipeline"
+  ManagedBy   = "Terraform"
+  Environment = "dev"
+  Owner       = "SenAnalytics"
+  Country     = "Senegal"
+}
