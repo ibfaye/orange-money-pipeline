@@ -167,9 +167,12 @@ class TestOrangeMoneyClient:
         )
 
         for tx in pages[0].transactions:
-            # Tokenized phones should be 16-char hex, not 9-digit numbers
+            # Tokenized phones should be 16-char hex, not 9-digit raw phone numbers
             assert len(tx.sender_phone) == 16
-            assert not tx.sender_phone.startswith("77")  # Not raw phone
+            assert len(tx.recipient_phone) == 16
+            # Should not match raw phone format (9 digits)
+            assert not tx.sender_phone.isdigit()
+            assert not tx.recipient_phone.isdigit()
 
     def test_transaction_validation(self):
         """Ensure Pydantic validation catches invalid transactions."""
