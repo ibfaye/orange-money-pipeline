@@ -282,7 +282,7 @@ class MockTransactionGenerator:
 
         return Transaction(
             transaction_id=tx_id,
-            external_id=f"EXT-{uuid.uuid4().hex[:12]}" if self.rng.random() < 0.3 else None,
+            external_id=(f"EXT-{uuid.uuid4().hex[:12]}" if self.rng.random() < 0.3 else None),
             transaction_type=txn_type,
             amount=float(amount),
             currency="XOF",
@@ -303,7 +303,7 @@ class MockTransactionGenerator:
             initiated_at=initiated,
             completed_at=completed,
             channel=channel,
-            agent_code=f"AG{self.rng.randint(10000, 99999)}" if channel == "AGENT" else None,
+            agent_code=(f"AG{self.rng.randint(10000, 99999)}" if channel == "AGENT" else None),
             region=region,
             raw_payload=None,
         )

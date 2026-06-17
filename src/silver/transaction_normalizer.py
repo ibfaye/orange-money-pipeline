@@ -122,7 +122,8 @@ class SilverNormalizer:
             )
             .withColumn("_is_weekend", F.col("_day_of_week").isin(1, 7))
             .withColumn(
-                "_is_peak_hour", F.col("_hour").between(9, 12) | F.col("_hour").between(15, 18)
+                "_is_peak_hour",
+                F.col("_hour").between(9, 12) | F.col("_hour").between(15, 18),
             )
             .withColumn("_is_merchant_txn", F.col("merchant_code").isNotNull())
             .withColumn(
@@ -147,9 +148,11 @@ class SilverNormalizer:
             "duplicates_removed": duplicates_removed,
             "quality_failures": quality_failures,
             "rows_with_warnings": rows_with_warnings,
-            "quality_pass_rate": round((rows_written - quality_failures) / rows_written * 100, 2)
-            if rows_written > 0
-            else 0,
+            "quality_pass_rate": (
+                round((rows_written - quality_failures) / rows_written * 100, 2)
+                if rows_written > 0
+                else 0
+            ),
         }
 
         logger.info(f"Silver normalization complete: {metrics}")

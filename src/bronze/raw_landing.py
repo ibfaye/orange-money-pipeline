@@ -149,7 +149,7 @@ class BronzeIngestor:
                     "channel": tx.channel,
                     "agent_code": tx.agent_code,
                     "region": tx.region,
-                    "raw_payload": _json.dumps(tx.raw_payload) if tx.raw_payload else None,
+                    "raw_payload": (_json.dumps(tx.raw_payload) if tx.raw_payload else None),
                     "_ingested_at": now,
                     "_source_file": (
                         f"orange-money-api/mock-{tx.initiated_at.strftime('%Y%m%d')}.json"
