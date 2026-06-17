@@ -16,11 +16,9 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Optional
 
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
-from pyspark.sql import Window
 
 from ..ingestion import config
 
@@ -54,8 +52,8 @@ class SilverNormalizer:
 
     def normalize(
         self,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> dict:
         """Run the full Bronze → Silver transformation.
 

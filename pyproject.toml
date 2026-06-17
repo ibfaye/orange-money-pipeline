@@ -57,6 +57,13 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# PySpark convention: import pyspark.sql.functions as F
+"src/bronze/*.py" = ["N812"]
+"src/silver/*.py" = ["N812"]
+"src/gold/*.py" = ["N812"]
+"tests/*.py" = ["F401"]  # pytest fixtures imported but detected as unused
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]

@@ -15,11 +15,9 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
 
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
-from pyspark.sql import Window
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +34,7 @@ class FraudDetector:
     def __init__(self, spark: SparkSession):
         self.spark = spark
 
-    def detect_all(self, target_date: Optional[datetime] = None) -> DataFrame:
+    def detect_all(self, target_date: datetime | None = None) -> DataFrame:
         """Run all fraud detection patterns for a target date.
 
         Returns a DataFrame of flagged transactions with pattern labels.
@@ -141,7 +139,7 @@ class FraudDetector:
         """Detect large transactions outside peak business hours."""
         off_hours = day_data \
             .filter(
-                (F.col("_is_peak_hour") == False) &
+                (~F.col("_is_peak_hour")) &
                 (F.col("amount") >= OFF_HOURS_LARGE_AMOUNT)
             )
 

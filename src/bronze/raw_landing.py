@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Iterator
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F

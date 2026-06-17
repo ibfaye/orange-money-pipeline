@@ -14,13 +14,13 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-import json
 import logging
 import random
 import time
 import uuid
+from collections.abc import Iterator
 from datetime import datetime, timedelta, timezone
-from typing import Any, Iterator, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import requests
 from pydantic import BaseModel, Field, field_validator
@@ -41,7 +41,10 @@ class Transaction(BaseModel):
 
     transaction_id: str = Field(..., description="Unique transaction reference (Orange)")
     external_id: str | None = Field(None, description="Merchant-side reference")
-    transaction_type: str = Field(..., description="PAYMENT | TRANSFER | WITHDRAWAL | DEPOSIT | REFUND")
+    transaction_type: str = Field(
+        ...,
+        description="PAYMENT | TRANSFER | WITHDRAWAL | DEPOSIT | REFUND",
+    )
     amount: float = Field(..., gt=0, description="Transaction amount in XOF")
     currency: str = Field(default="XOF", description="ISO 4217 currency code")
     fee: float = Field(default=0.0, ge=0, description="Transaction fee in XOF")
@@ -107,7 +110,11 @@ class PhoneTokenizer:
 
     def __init__(self, secret: str | None = None):
         import os as _os
-        self.secret = (secret or _os.getenv("OM_CDP_TOKEN_SECRET", "dev-secret-change-in-production")).encode()
+        self.secret = (
+            secret or _os.getenv(
+                "OM_CDP_TOKEN_SECRET", "dev-secret-change-in-production"
+            )
+        ).encode()
 
     def tokenize(self, phone: str) -> str:
         """Tokenize a phone number. Deterministic — same input → same token."""
@@ -268,7 +275,7 @@ class OrangeMoneyClient:
                 process(tx)
     """
 
-    def __init__(self, cfg: "OrangeMoneyConfig | None" = None):
+    def __init__(self, cfg: OrangeMoneyConfig | None = None):
         self.cfg = cfg or config
         self._tokenizer: PhoneTokenizer | None = None
         self._mock_gen: MockTransactionGenerator | None = None
@@ -428,7 +435,10 @@ class OrangeMoneyClient:
                         merchant_category=raw.get("merchantCategory"),
                         status=raw.get("status", "SUCCESS"),
                         initiated_at=datetime.fromisoformat(raw["initiatedAt"]),
-                        completed_at=datetime.fromisoformat(raw.get("completedAt")) if raw.get("completedAt") else None,
+                        completed_at=(
+                            datetime.fromisoformat(raw.get("completedAt"))
+                            if raw.get("completedAt") else None
+                        ),
                         channel=raw.get("channel", "USSD"),
                         region=raw.get("region"),
                         raw_payload=raw,

@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
@@ -31,8 +30,8 @@ class GoldAggregator:
 
     def build_daily_summary(
         self,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> int:
         """Build or refresh the daily summary table.
 
@@ -53,7 +52,8 @@ class GoldAggregator:
                 F.count(F.when(F.col("status") == "FAILED", 1)).alias("failed_count"),
                 F.count(F.when(F.col("status") == "REVERSED", 1)).alias("reversed_count"),
                 F.countDistinct("merchant_code").alias("unique_merchants"),
-                F.sum(F.when(F.col("_is_merchant_txn"), F.col("amount"))).alias("merchant_volume_xof"),
+                F.sum(F.when(F.col("_is_merchant_txn"), F.col("amount")))
+                .alias("merchant_volume_xof"),
                 F.avg("_processing_latency_seconds").alias("avg_latency_seconds"),
             ) \
             .withColumn("success_rate",
@@ -81,8 +81,8 @@ class GoldAggregator:
 
     def build_merchant_activity(
         self,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> int:
         """Build or refresh the merchant activity table.
 
@@ -139,8 +139,8 @@ class GoldAggregator:
 
     def _read_silver(
         self,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> DataFrame:
         """Read from Silver with optional date filtering."""
         df = self.spark.table(config.silver_path)
