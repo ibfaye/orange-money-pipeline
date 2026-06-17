@@ -44,6 +44,7 @@ QUALITY_RULES = {
 # Normalizer
 # ═══════════════════════════════════════════════════════════════════
 
+
 class SilverNormalizer:
     """Transforms Bronze → Silver with schema enforcement and dedup."""
 
@@ -75,10 +76,11 @@ class SilverNormalizer:
 
         # 2. Deduplicate by transaction_id (keep latest based on _ingested_at)
         window = Window.partitionBy("transaction_id").orderBy(F.col("_ingested_at").desc())
-        deduped = bronze \
-            .withColumn("_row_num", F.row_number().over(window)) \
-            .filter(F.col("_row_num") == 1) \
+        deduped = (
+            bronze.withColumn("_row_num", F.row_number().over(window))
+            .filter(F.col("_row_num") == 1)
             .drop("_row_num")
+        )
 
         duplicates_removed = rows_read - deduped.count()
 
@@ -94,54 +96,50 @@ class SilverNormalizer:
             *quality_checks,
             # Composite quality flag
             F.when(
-                F.col("_quality_amount_positive") &
-                F.col("_quality_valid_status") &
-                F.col("_quality_has_initiated_at"),
-                "PASS"
-            ).otherwise("FAIL").alias("_quality_flag"),
+                F.col("_quality_amount_positive")
+                & F.col("_quality_valid_status")
+                & F.col("_quality_has_initiated_at"),
+                "PASS",
+            )
+            .otherwise("FAIL")
+            .alias("_quality_flag"),
         )
 
         quality_failures = with_quality.filter(F.col("_quality_flag") == "FAIL").count()
 
         # 4. Enrich with derived columns
-        enriched = with_quality \
-            .withColumn("_date", F.to_date("initiated_at")) \
-            .withColumn("_hour", F.hour("initiated_at")) \
-            .withColumn("_day_of_week", F.dayofweek("initiated_at")) \
-            .withColumn("_amount_bucket",
+        enriched = (
+            with_quality.withColumn("_date", F.to_date("initiated_at"))
+            .withColumn("_hour", F.hour("initiated_at"))
+            .withColumn("_day_of_week", F.dayofweek("initiated_at"))
+            .withColumn(
+                "_amount_bucket",
                 F.when(F.col("amount") < 1000, "MICRO")
-                 .when(F.col("amount") < 5000, "SMALL")
-                 .when(F.col("amount") < 20000, "MEDIUM")
-                 .when(F.col("amount") < 100000, "LARGE")
-                 .otherwise("XLARGE")
-            ) \
-            .withColumn("_is_weekend",
-                F.col("_day_of_week").isin(1, 7)
-            ) \
-            .withColumn("_is_peak_hour",
-                F.col("_hour").between(9, 12) | F.col("_hour").between(15, 18)
-            ) \
-            .withColumn("_is_merchant_txn",
-                F.col("merchant_code").isNotNull()
-            ) \
-            .withColumn("_processing_latency_seconds",
-                F.unix_timestamp("completed_at") - F.unix_timestamp("initiated_at")
+                .when(F.col("amount") < 5000, "SMALL")
+                .when(F.col("amount") < 20000, "MEDIUM")
+                .when(F.col("amount") < 100000, "LARGE")
+                .otherwise("XLARGE"),
             )
+            .withColumn("_is_weekend", F.col("_day_of_week").isin(1, 7))
+            .withColumn(
+                "_is_peak_hour", F.col("_hour").between(9, 12) | F.col("_hour").between(15, 18)
+            )
+            .withColumn("_is_merchant_txn", F.col("merchant_code").isNotNull())
+            .withColumn(
+                "_processing_latency_seconds",
+                F.unix_timestamp("completed_at") - F.unix_timestamp("initiated_at"),
+            )
+        )
 
         # 5. Write to Silver Delta table
-        enriched.write \
-            .mode("overwrite") \
-            .format("delta") \
-            .option("overwriteSchema", "true") \
-            .partitionBy("_date") \
-            .saveAsTable(config.silver_path)
+        enriched.write.mode("overwrite").format("delta").option(
+            "overwriteSchema", "true"
+        ).partitionBy("_date").saveAsTable(config.silver_path)
 
         rows_written = enriched.count()
 
         # Add warning rows (quality FAIL but still written)
-        rows_with_warnings = enriched \
-            .filter(F.col("_quality_flag") == "FAIL") \
-            .count()
+        rows_with_warnings = enriched.filter(F.col("_quality_flag") == "FAIL").count()
 
         metrics = {
             "rows_read": rows_read,
@@ -149,9 +147,9 @@ class SilverNormalizer:
             "duplicates_removed": duplicates_removed,
             "quality_failures": quality_failures,
             "rows_with_warnings": rows_with_warnings,
-            "quality_pass_rate": round(
-                (rows_written - quality_failures) / rows_written * 100, 2
-            ) if rows_written > 0 else 0,
+            "quality_pass_rate": round((rows_written - quality_failures) / rows_written * 100, 2)
+            if rows_written > 0
+            else 0,
         }
 
         logger.info(f"Silver normalization complete: {metrics}")
@@ -180,9 +178,11 @@ class SilverNormalizer:
 # Convenience Function
 # ═══════════════════════════════════════════════════════════════════
 
+
 def normalize_daily(spark: SparkSession, days_back: int = 1) -> dict:
     """Quick daily normalization: transform yesterday's Bronze data."""
     from datetime import timedelta
+
     end_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     start_date = end_date - timedelta(days=days_back)
     normalizer = SilverNormalizer(spark)

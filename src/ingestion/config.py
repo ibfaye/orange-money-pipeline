@@ -25,15 +25,9 @@ class OrangeMoneyConfig:
             "OM_API_BASE_URL", "https://api.orange.com/orange-money/v1"
         )
     )
-    api_client_id: str = field(
-        default_factory=lambda: os.getenv("OM_CLIENT_ID", "")
-    )
-    api_client_secret: str = field(
-        default_factory=lambda: os.getenv("OM_CLIENT_SECRET", "")
-    )
-    api_merchant_code: str = field(
-        default_factory=lambda: os.getenv("OM_MERCHANT_CODE", "")
-    )
+    api_client_id: str = field(default_factory=lambda: os.getenv("OM_CLIENT_ID", ""))
+    api_client_secret: str = field(default_factory=lambda: os.getenv("OM_CLIENT_SECRET", ""))
+    api_merchant_code: str = field(default_factory=lambda: os.getenv("OM_MERCHANT_CODE", ""))
 
     # ── Mock Mode ──────────────────────────────────────────────────
     mock_mode: bool = field(
@@ -56,9 +50,7 @@ class OrangeMoneyConfig:
     cdp_consent_required: bool = True
 
     # ── Databricks / Delta Lake ────────────────────────────────────
-    catalog_name: str = field(
-        default_factory=lambda: os.getenv("OM_CATALOG", "orange_money")
-    )
+    catalog_name: str = field(default_factory=lambda: os.getenv("OM_CATALOG", "orange_money"))
     bronze_schema: str = "bronze"
     silver_schema: str = "silver"
     gold_schema: str = "gold"

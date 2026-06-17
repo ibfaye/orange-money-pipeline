@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 # Data Models
 # ═══════════════════════════════════════════════════════════════════
 
+
 class Transaction(BaseModel):
     """Normalized Orange Money transaction record."""
 
@@ -77,9 +78,13 @@ class Transaction(BaseModel):
     def validate_phone(cls, v: str) -> str:
         """Validate Senegalese phone number format."""
         clean = v.replace("+221", "").replace(" ", "").strip()
-        if not (clean.startswith("77") or clean.startswith("78") or
-                clean.startswith("76") or clean.startswith("70") or
-                clean.startswith("75")):
+        if not (
+            clean.startswith("77")
+            or clean.startswith("78")
+            or clean.startswith("76")
+            or clean.startswith("70")
+            or clean.startswith("75")
+        ):
             # Accept but warn for non-standard formats
             logger.warning(f"Non-standard phone format: {v}")
         return clean
@@ -87,6 +92,7 @@ class Transaction(BaseModel):
 
 class TransactionPage(BaseModel):
     """Paginated transaction response."""
+
     transactions: list[Transaction]
     page: int
     page_size: int
@@ -97,6 +103,7 @@ class TransactionPage(BaseModel):
 # ═══════════════════════════════════════════════════════════════════
 # Tokenization (CDP Compliance)
 # ═══════════════════════════════════════════════════════════════════
+
 
 class PhoneTokenizer:
     """HMAC-based phone number tokenization for CDP compliance.
@@ -110,10 +117,9 @@ class PhoneTokenizer:
 
     def __init__(self, secret: str | None = None):
         import os as _os
+
         self.secret = (
-            secret or _os.getenv(
-                "OM_CDP_TOKEN_SECRET", "dev-secret-change-in-production"
-            )
+            secret or _os.getenv("OM_CDP_TOKEN_SECRET", "dev-secret-change-in-production")
         ).encode()
 
     def tokenize(self, phone: str) -> str:
@@ -132,6 +138,7 @@ class PhoneTokenizer:
 # Mock Data Generator
 # ═══════════════════════════════════════════════════════════════════
 
+
 class MockTransactionGenerator:
     """Generates realistic synthetic Orange Money transactions for development.
 
@@ -144,27 +151,51 @@ class MockTransactionGenerator:
 
     SENEGAL_PREFIXES = ["77", "78", "76", "70", "75"]
     SENEGAL_REGIONS = [
-        "Dakar", "Dakar", "Dakar", "Dakar", "Dakar",  # 45%
-        "Thiès", "Thiès", "Thiès",                     # 15%
-        "Diourbel", "Diourbel",                         # 8%
-        "Kaolack", "Kaolack",                           # 8%
-        "Saint-Louis", "Saint-Louis",                   # 8%
-        "Ziguinchor",                                   # 5%
-        "Louga",                                        # 4%
-        "Tambacounda",                                  # 3%
-        "Kolda",                                        # 2%
-        "Matam",                                        # 1%
-        "Fatick",                                       # 1%
+        "Dakar",
+        "Dakar",
+        "Dakar",
+        "Dakar",
+        "Dakar",  # 45%
+        "Thiès",
+        "Thiès",
+        "Thiès",  # 15%
+        "Diourbel",
+        "Diourbel",  # 8%
+        "Kaolack",
+        "Kaolack",  # 8%
+        "Saint-Louis",
+        "Saint-Louis",  # 8%
+        "Ziguinchor",  # 5%
+        "Louga",  # 4%
+        "Tambacounda",  # 3%
+        "Kolda",  # 2%
+        "Matam",  # 1%
+        "Fatick",  # 1%
     ]
     COMMON_AMOUNTS = [500, 1000, 2000, 2500, 5000, 10000, 15000, 20000, 50000, 100000]
     MERCHANT_CATEGORIES = [
-        "FOOD", "TRANSPORT", "UTILITIES", "TELECOM", "RETAIL",
-        "HEALTH", "EDUCATION", "AGRICULTURE", "FINANCE", "OTHER",
+        "FOOD",
+        "TRANSPORT",
+        "UTILITIES",
+        "TELECOM",
+        "RETAIL",
+        "HEALTH",
+        "EDUCATION",
+        "AGRICULTURE",
+        "FINANCE",
+        "OTHER",
     ]
     MERCHANT_NAMES = [
-        "Sonatel", "Senelec", "SDE", "Auchan", "Total",
-        "Pharmacie Nationale", "Dakar Dem Dikk", "La Poste",
-        "Marché Kermel", "Centre Commercial",
+        "Sonatel",
+        "Senelec",
+        "SDE",
+        "Auchan",
+        "Total",
+        "Pharmacie Nationale",
+        "Dakar Dem Dikk",
+        "La Poste",
+        "Marché Kermel",
+        "Centre Commercial",
     ]
 
     def __init__(self, seed: int | None = None) -> None:
@@ -189,10 +220,30 @@ class MockTransactionGenerator:
     def _peak_weighted_hour(self) -> int:
         """Return hour weighted toward peak transaction times."""
         weights = {
-            0: 0.5, 1: 0.3, 2: 0.2, 3: 0.1, 4: 0.2, 5: 0.5,
-            6: 2.0, 7: 3.0, 8: 5.0, 9: 7.0, 10: 8.0, 11: 7.0,
-            12: 5.0, 13: 3.0, 14: 4.0, 15: 6.0, 16: 7.0, 17: 8.0,
-            18: 6.0, 19: 4.0, 20: 3.0, 21: 2.0, 22: 1.5, 23: 1.0,
+            0: 0.5,
+            1: 0.3,
+            2: 0.2,
+            3: 0.1,
+            4: 0.2,
+            5: 0.5,
+            6: 2.0,
+            7: 3.0,
+            8: 5.0,
+            9: 7.0,
+            10: 8.0,
+            11: 7.0,
+            12: 5.0,
+            13: 3.0,
+            14: 4.0,
+            15: 6.0,
+            16: 7.0,
+            17: 8.0,
+            18: 6.0,
+            19: 4.0,
+            20: 3.0,
+            21: 2.0,
+            22: 1.5,
+            23: 1.0,
         }
         hours = list(weights.keys())
         w = [weights[h] for h in hours]
@@ -217,8 +268,7 @@ class MockTransactionGenerator:
         hour = self._peak_weighted_hour()
         minute = self.rng.randint(0, 59)
         second = self.rng.randint(0, 59)
-        initiated = date.replace(hour=hour, minute=minute, second=second,
-                                tzinfo=timezone.utc)
+        initiated = date.replace(hour=hour, minute=minute, second=second, tzinfo=timezone.utc)
         completed = initiated + timedelta(seconds=self.rng.randint(1, 30))
 
         amount = self._random_amount()
@@ -244,8 +294,11 @@ class MockTransactionGenerator:
             merchant_code=merchant[0] if merchant else None,
             merchant_name=merchant[1] if merchant else None,
             merchant_category=merchant[2] if merchant else None,
-            status=self.rng.choices(["SUCCESS", "SUCCESS", "SUCCESS", "FAILED", "PENDING"],
-                                     weights=[88, 88, 88, 8, 4], k=1)[0],
+            status=self.rng.choices(
+                ["SUCCESS", "SUCCESS", "SUCCESS", "FAILED", "PENDING"],
+                weights=[88, 88, 88, 8, 4],
+                k=1,
+            )[0],
             failure_reason="INSUFFICIENT_FUNDS" if self.rng.random() < 0.02 else None,
             initiated_at=initiated,
             completed_at=completed,
@@ -264,6 +317,7 @@ class MockTransactionGenerator:
 # ═══════════════════════════════════════════════════════════════════
 # API Client
 # ═══════════════════════════════════════════════════════════════════
+
 
 class OrangeMoneyClient:
     """Orange Money API client with mock mode fallback.
@@ -344,9 +398,9 @@ class OrangeMoneyClient:
         total_generated = 0
 
         while current <= end_date:
-            daily_txns = list(self._mock_gen.generate_day(
-                current, self.cfg.mock_transactions_per_day
-            ))
+            daily_txns = list(
+                self._mock_gen.generate_day(current, self.cfg.mock_transactions_per_day)
+            )
 
             # Apply CDP tokenization if enabled
             if self._tokenizer:
@@ -358,7 +412,7 @@ class OrangeMoneyClient:
 
             # Paginate
             for offset in range(0, len(daily_txns), page_size):
-                page_txns = daily_txns[offset:offset + page_size]
+                page_txns = daily_txns[offset : offset + page_size]
                 yield TransactionPage(
                     transactions=page_txns,
                     page=offset // page_size + 1,
@@ -414,7 +468,7 @@ class OrangeMoneyClient:
                     if attempt == self.cfg.max_retries - 1:
                         raise
                     logger.warning(f"Retry {attempt + 1}/{self.cfg.max_retries}: {e}")
-                    time.sleep(self.cfg.retry_delay_seconds * (2 ** attempt))
+                    time.sleep(self.cfg.retry_delay_seconds * (2**attempt))
 
             transactions = []
             for raw in data.get("transactions", []):
@@ -437,7 +491,8 @@ class OrangeMoneyClient:
                         initiated_at=datetime.fromisoformat(raw["initiatedAt"]),
                         completed_at=(
                             datetime.fromisoformat(raw.get("completedAt"))
-                            if raw.get("completedAt") else None
+                            if raw.get("completedAt")
+                            else None
                         ),
                         channel=raw.get("channel", "USSD"),
                         region=raw.get("region"),

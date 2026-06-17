@@ -158,11 +158,13 @@ class TestOrangeMoneyClient:
 
     def test_cdp_tokenization_applied(self):
         client = OrangeMoneyClient()
-        pages = list(client.fetch_transactions(
-            datetime(2025, 1, 15),
-            datetime(2025, 1, 15),
-            page_size=10,
-        ))
+        pages = list(
+            client.fetch_transactions(
+                datetime(2025, 1, 15),
+                datetime(2025, 1, 15),
+                page_size=10,
+            )
+        )
 
         for tx in pages[0].transactions:
             # Tokenized phones should be 16-char hex, not 9-digit numbers

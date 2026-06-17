@@ -34,36 +34,39 @@ logger = logging.getLogger(__name__)
 # Schema Definition
 # ═══════════════════════════════════════════════════════════════════
 
-BRONZE_SCHEMA = StructType([
-    StructField("transaction_id", StringType(), False),
-    StructField("external_id", StringType(), True),
-    StructField("transaction_type", StringType(), False),
-    StructField("amount", DoubleType(), False),
-    StructField("currency", StringType(), False),
-    StructField("fee", DoubleType(), False),
-    StructField("sender_phone", StringType(), True),      # Tokenized if CDP enabled
-    StructField("recipient_phone", StringType(), True),   # Tokenized if CDP enabled
-    StructField("merchant_code", StringType(), True),
-    StructField("merchant_name", StringType(), True),
-    StructField("merchant_category", StringType(), True),
-    StructField("status", StringType(), False),
-    StructField("failure_reason", StringType(), True),
-    StructField("initiated_at", TimestampType(), False),
-    StructField("completed_at", TimestampType(), True),
-    StructField("channel", StringType(), False),
-    StructField("agent_code", StringType(), True),
-    StructField("region", StringType(), True),
-    StructField("raw_payload", StringType(), True),       # JSON string
-    # Audit columns
-    StructField("_ingested_at", TimestampType(), False),
-    StructField("_source_file", StringType(), False),
-    StructField("_batch_id", StringType(), False),
-])
+BRONZE_SCHEMA = StructType(
+    [
+        StructField("transaction_id", StringType(), False),
+        StructField("external_id", StringType(), True),
+        StructField("transaction_type", StringType(), False),
+        StructField("amount", DoubleType(), False),
+        StructField("currency", StringType(), False),
+        StructField("fee", DoubleType(), False),
+        StructField("sender_phone", StringType(), True),  # Tokenized if CDP enabled
+        StructField("recipient_phone", StringType(), True),  # Tokenized if CDP enabled
+        StructField("merchant_code", StringType(), True),
+        StructField("merchant_name", StringType(), True),
+        StructField("merchant_category", StringType(), True),
+        StructField("status", StringType(), False),
+        StructField("failure_reason", StringType(), True),
+        StructField("initiated_at", TimestampType(), False),
+        StructField("completed_at", TimestampType(), True),
+        StructField("channel", StringType(), False),
+        StructField("agent_code", StringType(), True),
+        StructField("region", StringType(), True),
+        StructField("raw_payload", StringType(), True),  # JSON string
+        # Audit columns
+        StructField("_ingested_at", TimestampType(), False),
+        StructField("_source_file", StringType(), False),
+        StructField("_batch_id", StringType(), False),
+    ]
+)
 
 
 # ═══════════════════════════════════════════════════════════════════
 # Bronze Ingestion
 # ═══════════════════════════════════════════════════════════════════
+
 
 class BronzeIngestor:
     """Ingests Orange Money transactions into the Bronze Delta table.
@@ -102,11 +105,9 @@ class BronzeIngestor:
             df = self._transactions_to_dataframe(page, batch_id)
 
             # Write to Delta — append only, Bronze never updates
-            df.write \
-                .mode("append") \
-                .format("delta") \
-                .option("mergeSchema", "true") \
-                .saveAsTable(config.bronze_path)
+            df.write.mode("append").format("delta").option("mergeSchema", "true").saveAsTable(
+                config.bronze_path
+            )
 
             total_rows += len(page.transactions)
             logger.debug(f"  Batch {batch_id}: {len(page.transactions)} rows written")
@@ -117,11 +118,10 @@ class BronzeIngestor:
     def _get_batch_id(self) -> str:
         """Generate a unique batch ID for lineage tracking."""
         import uuid
+
         return f"bronze-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:8]}"
 
-    def _transactions_to_dataframe(
-        self, page: TransactionPage, batch_id: str
-    ) -> DataFrame:
+    def _transactions_to_dataframe(self, page: TransactionPage, batch_id: str) -> DataFrame:
         """Convert a page of Transaction models to a Spark DataFrame."""
         import json as _json
 
@@ -129,30 +129,34 @@ class BronzeIngestor:
         now = datetime.utcnow()
 
         for tx in page.transactions:
-            rows.append({
-                "transaction_id": tx.transaction_id,
-                "external_id": tx.external_id,
-                "transaction_type": tx.transaction_type,
-                "amount": tx.amount,
-                "currency": tx.currency,
-                "fee": tx.fee,
-                "sender_phone": tx.sender_phone,
-                "recipient_phone": tx.recipient_phone,
-                "merchant_code": tx.merchant_code,
-                "merchant_name": tx.merchant_name,
-                "merchant_category": tx.merchant_category,
-                "status": tx.status,
-                "failure_reason": tx.failure_reason,
-                "initiated_at": tx.initiated_at,
-                "completed_at": tx.completed_at,
-                "channel": tx.channel,
-                "agent_code": tx.agent_code,
-                "region": tx.region,
-                "raw_payload": _json.dumps(tx.raw_payload) if tx.raw_payload else None,
-                "_ingested_at": now,
-                "_source_file": f"orange-money-api/mock-{tx.initiated_at.strftime('%Y%m%d')}.json",
-                "_batch_id": batch_id,
-            })
+            rows.append(
+                {
+                    "transaction_id": tx.transaction_id,
+                    "external_id": tx.external_id,
+                    "transaction_type": tx.transaction_type,
+                    "amount": tx.amount,
+                    "currency": tx.currency,
+                    "fee": tx.fee,
+                    "sender_phone": tx.sender_phone,
+                    "recipient_phone": tx.recipient_phone,
+                    "merchant_code": tx.merchant_code,
+                    "merchant_name": tx.merchant_name,
+                    "merchant_category": tx.merchant_category,
+                    "status": tx.status,
+                    "failure_reason": tx.failure_reason,
+                    "initiated_at": tx.initiated_at,
+                    "completed_at": tx.completed_at,
+                    "channel": tx.channel,
+                    "agent_code": tx.agent_code,
+                    "region": tx.region,
+                    "raw_payload": _json.dumps(tx.raw_payload) if tx.raw_payload else None,
+                    "_ingested_at": now,
+                    "_source_file": (
+                        f"orange-money-api/mock-{tx.initiated_at.strftime('%Y%m%d')}.json"
+                    ),
+                    "_batch_id": batch_id,
+                }
+            )
 
         return self.spark.createDataFrame(rows, schema=BRONZE_SCHEMA)
 
@@ -172,6 +176,7 @@ class BronzeIngestor:
 # ═══════════════════════════════════════════════════════════════════
 # Convenience Function
 # ═══════════════════════════════════════════════════════════════════
+
 
 def ingest_daily(
     spark: SparkSession,

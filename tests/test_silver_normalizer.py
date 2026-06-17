@@ -53,9 +53,8 @@ class TestSilverNormalizer:
 
         for amount, status, has_date, expected in test_cases:
             is_pass = (
-                amount > 0 and
-                status in ("SUCCESS", "PENDING", "FAILED", "REVERSED") and
-                has_date
+                amount > 0 and status in ("SUCCESS", "PENDING", "FAILED", "REVERSED") and has_date
             )
-            assert ("PASS" if is_pass else "FAIL") == expected, \
+            assert ("PASS" if is_pass else "FAIL") == expected, (
                 f"Failed: amount={amount}, status={status}, has_date={has_date}"
+            )

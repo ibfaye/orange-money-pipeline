@@ -39,9 +39,9 @@ class GoldAggregator:
         """
         silver = self._read_silver(start_date, end_date)
 
-        daily = silver \
-            .filter(F.col("_quality_flag") == "PASS") \
-            .groupBy("_date", "region", "channel", "_is_weekend", "_is_peak_hour") \
+        daily = (
+            silver.filter(F.col("_quality_flag") == "PASS")
+            .groupBy("_date", "region", "channel", "_is_weekend", "_is_peak_hour")
             .agg(
                 F.count("*").alias("transaction_count"),
                 F.sum("amount").alias("total_volume_xof"),
@@ -52,28 +52,30 @@ class GoldAggregator:
                 F.count(F.when(F.col("status") == "FAILED", 1)).alias("failed_count"),
                 F.count(F.when(F.col("status") == "REVERSED", 1)).alias("reversed_count"),
                 F.countDistinct("merchant_code").alias("unique_merchants"),
-                F.sum(F.when(F.col("_is_merchant_txn"), F.col("amount")))
-                .alias("merchant_volume_xof"),
+                F.sum(F.when(F.col("_is_merchant_txn"), F.col("amount"))).alias(
+                    "merchant_volume_xof"
+                ),
                 F.avg("_processing_latency_seconds").alias("avg_latency_seconds"),
-            ) \
-            .withColumn("success_rate",
+            )
+            .withColumn(
+                "success_rate",
                 F.round(
-                    (F.col("transaction_count") - F.col("failed_count")) /
-                    F.col("transaction_count") * 100, 2
-                )
-            ) \
-            .withColumn("merchant_share_pct",
-                F.round(
-                    F.col("merchant_txn_count") / F.col("transaction_count") * 100, 2
-                )
-            ) \
+                    (F.col("transaction_count") - F.col("failed_count"))
+                    / F.col("transaction_count")
+                    * 100,
+                    2,
+                ),
+            )
+            .withColumn(
+                "merchant_share_pct",
+                F.round(F.col("merchant_txn_count") / F.col("transaction_count") * 100, 2),
+            )
             .withColumn("_updated_at", F.current_timestamp())
+        )
 
-        daily.write \
-            .mode("overwrite") \
-            .format("delta") \
-            .partitionBy("_date") \
-            .saveAsTable(config.gold_daily_path)
+        daily.write.mode("overwrite").format("delta").partitionBy("_date").saveAsTable(
+            config.gold_daily_path
+        )
 
         row_count = daily.count()
         logger.info(f"Gold daily summary: {row_count} rows written")
@@ -90,9 +92,9 @@ class GoldAggregator:
         """
         silver = self._read_silver(start_date, end_date)
 
-        merchant = silver \
-            .filter(F.col("_is_merchant_txn") & (F.col("_quality_flag") == "PASS")) \
-            .groupBy("merchant_code", "merchant_name", "merchant_category", "_date") \
+        merchant = (
+            silver.filter(F.col("_is_merchant_txn") & (F.col("_quality_flag") == "PASS"))
+            .groupBy("merchant_code", "merchant_name", "merchant_category", "_date")
             .agg(
                 F.count("*").alias("transaction_count"),
                 F.sum("amount").alias("total_volume_xof"),
@@ -100,25 +102,26 @@ class GoldAggregator:
                 F.sum("fee").alias("total_fees_xof"),
                 F.countDistinct("sender_phone").alias("unique_customers"),
                 F.count(F.when(F.col("status") == "FAILED", 1)).alias("failed_count"),
-            ) \
-            .withColumn("success_rate",
+            )
+            .withColumn(
+                "success_rate",
                 F.round(
-                    (F.col("transaction_count") - F.col("failed_count")) /
-                    F.col("transaction_count") * 100, 2
-                )
-            ) \
-            .withColumn("avg_txn_per_customer",
-                F.round(
-                    F.col("transaction_count") / F.col("unique_customers"), 2
-                )
-            ) \
+                    (F.col("transaction_count") - F.col("failed_count"))
+                    / F.col("transaction_count")
+                    * 100,
+                    2,
+                ),
+            )
+            .withColumn(
+                "avg_txn_per_customer",
+                F.round(F.col("transaction_count") / F.col("unique_customers"), 2),
+            )
             .withColumn("_updated_at", F.current_timestamp())
+        )
 
-        merchant.write \
-            .mode("overwrite") \
-            .format("delta") \
-            .partitionBy("_date") \
-            .saveAsTable(config.gold_merchant_path)
+        merchant.write.mode("overwrite").format("delta").partitionBy("_date").saveAsTable(
+            config.gold_merchant_path
+        )
 
         row_count = merchant.count()
         logger.info(f"Gold merchant activity: {row_count} rows written")
@@ -154,6 +157,7 @@ class GoldAggregator:
 # ═══════════════════════════════════════════════════════════════════
 # Convenience Function
 # ═══════════════════════════════════════════════════════════════════
+
 
 def aggregate_daily(spark: SparkSession, days_back: int = 30) -> dict:
     """Quick daily aggregation: rebuild Gold tables."""
