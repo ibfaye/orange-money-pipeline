@@ -27,6 +27,10 @@ terraform {
       source  = "databricks/databricks"
       version = ">= 1.40.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5.0"
+    }
   }
 
   backend "local" {
@@ -45,7 +49,7 @@ provider "azurerm" {
 }
 
 provider "databricks" {
-  host  = azurerm_databricks_workspace.this.workspace_url
+  host                        = azurerm_databricks_workspace.this.workspace_url
   azure_workspace_resource_id = azurerm_databricks_workspace.this.id
 }
 
@@ -71,7 +75,7 @@ resource "azurerm_storage_account" "datalake" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
-  is_hns_enabled           = true  # Hierarchical namespace for ADLS Gen2
+  is_hns_enabled           = true # Hierarchical namespace for ADLS Gen2
 
   tags = var.tags
 }
