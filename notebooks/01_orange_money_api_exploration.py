@@ -24,7 +24,7 @@ Cluster: Single-node (dev/exploration)
 # COMMAND ----------
 # Setup
 import sys
-sys.path.append("/Workspace/Repos/senanalytics/orange-money-pipeline/src")
+sys.path.append("/Workspace/Repos/xamxamgraph/orange-money-pipeline/src")
 
 from datetime import datetime, timedelta
 from pprint import pprint

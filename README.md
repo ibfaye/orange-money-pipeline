@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/senanalytics/brand/main/senanalytics-badge.svg" alt="Sen'Analytics" height="40">
+  <img src="https://raw.githubusercontent.com/xamxamgraph/brand/main/xamxamgraph-badge.svg" alt="XamXam Graph" height="40">
 </p>
 
 <h1 align="center">Orange Money Pipeline</h1>
@@ -13,7 +13,7 @@
   <a href="#english-summary">🇬🇧 English Summary</a> ·
   <a href="#architecture">🏗️ Architecture</a> ·
   <a href="#démarrage-rapide">🚀 Démarrage</a> ·
-  <a href="https://senanalytics.sn">🌐 Sen'Analytics</a>
+  <a href="https://xamxamgraph.com">🌐 XamXam Graph</a>
 </p>
 
 <p align="center">
@@ -43,7 +43,7 @@ C'est un **pipeline Medallion complet** (Bronze → Silver → Gold) sur Azure D
 - 🧪 **Mode mock intégré** — données synthétiques réalistes pour le développement sans credentials API
 - 🐍 **Python + dbt** — choisissez votre couche de transformation (PySpark ou SQL)
 
-> **Note importante :** Ce dépôt est un **framework de référence**. Le client API fonctionne en mode mock par défaut. Pour le connecter à l'API Orange Money en production, vous avez besoin de credentials partenaire Orange. [Contactez-nous](https://senanalytics.sn) pour un accompagnement.
+> **Note importante :** Ce dépôt est un **framework de référence**. Le client API fonctionne en mode mock par défaut. Pour le connecter à l'API Orange Money en production, vous avez besoin de credentials partenaire Orange. [Contactez-nous](https://xamxamgraph.com) pour un accompagnement.
 
 ---
 
@@ -98,7 +98,7 @@ C'est un **pipeline Medallion complet** (Bronze → Silver → Gold) sur Azure D
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/senanalytics/orange-money-pipeline.git
+git clone https://github.com/xamxamgraph/orange-money-pipeline.git
 cd orange-money-pipeline
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
@@ -165,7 +165,7 @@ Ce pipeline est conçu pour la **Commission de Protection des Données Personnel
 | **Art. 50 — Consentement** | Métadonnées de consentement tracées dans le schéma Bronze. `cdp_consent_required = True` par défaut. |
 | **Art. 33 — Sécurité du traitement** | Infrastructure Azure avec VNet injection, Unity Catalog RBAC, chiffrement au repos (ADLS Gen2). |
 
-Pour une analyse complète de votre conformité CDP, [planifiez un diagnostic d'architecture](https://senanalytics.sn).
+Pour une analyse complète de votre conformité CDP, [planifiez un diagnostic d'architecture](https://xamxamgraph.com).
 
 ---
 
@@ -230,7 +230,7 @@ orange-money-pipeline/
 <a name="english-summary"></a>
 ## 🇬🇧 English Summary
 
-**Orange Money Pipeline** is a production-grade Azure Databricks Medallion (Bronze → Silver → Gold) pipeline for Orange Money mobile payment transactions. Built by [Sen'Analytics](https://senanalytics.sn), a data engineering studio based in Dakar and Montréal.
+**Orange Money Pipeline** is a production-grade Azure Databricks Medallion (Bronze → Silver → Gold) pipeline for Orange Money mobile payment transactions. Built by [XamXam Graph](https://xamxamgraph.com), a data engineering studio based in Dakar and Montréal.
 
 ### Key Features
 - **Medallion Architecture** — append-only Bronze, quality-checked Silver, business-aggregate Gold
@@ -244,7 +244,7 @@ orange-money-pipeline/
 ### Quick Start (Mock Mode — No API Credentials)
 
 ```bash
-git clone https://github.com/senanalytics/orange-money-pipeline.git
+git clone https://github.com/xamxamgraph/orange-money-pipeline.git
 cd orange-money-pipeline
 pip install -e ".[dev]"
 pytest tests/ -v
@@ -258,7 +258,7 @@ Orange Money processes billions of XOF monthly across 14M+ users in Senegal. Mos
 
 ## 📞 Vous avez un projet Orange Money, Wave, ou Free Money ?
 
-Sen'Analytics accompagne les banques, fintechs et grandes entreprises dans la mise en place d'architectures de données modernes sur Azure Databricks.
+XamXam Graph accompagne les banques, fintechs et grandes entreprises dans la mise en place d'architectures de données modernes sur Azure Databricks.
 
 **Nos services :**
 - 🔍 **Audit de pipeline** — Analyse de votre ingestion actuelle, score de conformité CDP, feuille de route
@@ -267,17 +267,17 @@ Sen'Analytics accompagne les banques, fintechs et grandes entreprises dans la mi
 - 🔒 **Gouvernance Unity Catalog** — Conformité CDP, Law 25 (Québec), politiques de rétention
 
 <p align="center">
-  <a href="https://senanalytics.sn">
+  <a href="https://xamxamgraph.com">
     <strong>🌐 Planifier un Diagnostic d'Architecture →</strong>
   </a>
 </p>
 
 <p align="center">
-  <sub>Built with 🇸🇳 in Dakar & 🇨🇦 in Montréal · <a href="https://senanalytics.sn">Sen'Analytics</a> · <a href="mailto:engineering@senanalytics.sn">engineering@senanalytics.sn</a></sub>
+  <sub>Built with 🇸🇳 in Dakar & 🇨🇦 in Montréal · <a href="https://xamxamgraph.com">XamXam Graph</a> · <a href="mailto:engineering@xamxamgraph.com">engineering@xamxamgraph.com</a></sub>
 </p>
 
 ---
 
 ## 📄 Licence
 
-MIT © [Sen'Analytics](https://senanalytics.sn)
+MIT © [XamXam Graph](https://xamxamgraph.com)

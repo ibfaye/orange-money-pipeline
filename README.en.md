@@ -1,6 +1,6 @@
 # Orange Money Pipeline — English Reference
 
-> This is the English reference for the [Orange Money Pipeline](https://github.com/senanalytics/orange-money-pipeline). The primary README is in French. Below is a summary.
+> This is the English reference for the [Orange Money Pipeline](https://github.com/xamxamgraph/orange-money-pipeline). The primary README is in French. Below is a summary.
 
 ## What This Is
 
@@ -28,13 +28,13 @@ This pipeline implements Senegal's **Commission de Protection des Données Perso
 - **Art. 62 (Retention)**: Configurable retention periods with date-partitioned deletion
 - **Art. 50 (Consent)**: Consent metadata tracked in Bronze schema
 
-For full CDP compliance architecture, [contact Sen'Analytics](https://senanalytics.sn).
+For full CDP compliance architecture, [contact XamXam Graph](https://xamxamgraph.com).
 
 ## Quick Reference
 
 ```bash
 # Clone
-git clone https://github.com/senanalytics/orange-money-pipeline.git
+git clone https://github.com/xamxamgraph/orange-money-pipeline.git
 cd orange-money-pipeline
 
 # Install
@@ -49,4 +49,4 @@ cd terraform && terraform init && terraform apply
 
 ## License
 
-MIT © [Sen'Analytics](https://senanalytics.sn)
+MIT © [XamXam Graph](https://xamxamgraph.com)

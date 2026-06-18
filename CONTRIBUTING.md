@@ -1,6 +1,6 @@
 # Contributing to Orange Money Pipeline
 
-Merci de votre intérêt pour ce projet ! Ce dépôt est maintenu par [Sen'Analytics](https://senanalytics.sn), un studio d'architecture de données basé à Dakar et Montréal.
+Merci de votre intérêt pour ce projet ! Ce dépôt est maintenu par [XamXam Graph](https://xamxamgraph.com), un studio d'architecture de données basé à Dakar et Montréal.
 
 ## Comment contribuer
 
@@ -30,4 +30,4 @@ Nous accueillons particulièrement les contributions sur :
 
 ## Contact
 
-Pour toute question, contactez-nous à **engineering@senanalytics.sn** ou ouvrez une issue.
+Pour toute question, contactez-nous à **engineering@xamxamgraph.com** ou ouvrez une issue.

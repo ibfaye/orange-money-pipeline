@@ -3,7 +3,7 @@ title: "Architecture Medallion pour Orange Money : Pipeline de Données sur Azur
 description: "Comment ingérer, normaliser et analyser des millions de transactions Orange Money avec une architecture Medallion (Bronze → Silver → Gold) conforme à la CDP du Sénégal."
 date: 2025-06-16
 author: "Ibrahim Faye"
-authorTitle: "Founder & Principal Solution Architect, Sen'Analytics"
+authorTitle: "Founder & Principal Solution Architect, XamXam Graph"
 tags:
   - databricks
   - medallion-architecture
@@ -16,7 +16,7 @@ tags:
   - pyspark
   - dbt
 featured: true
-canonical: https://senanalytics.sn/journal/architecture-medallion-orange-money-databricks
+canonical: https://xamxamgraph.com/journal/architecture-medallion-orange-money-databricks
 ---
 
 # Architecture Medallion pour Orange Money : Pipeline de Données sur Azure Databricks
@@ -302,17 +302,17 @@ Le dépôt contient :
 
 La plupart des architectures de données pour le mobile money en Afrique de l'Ouest sont construites avec des scripts fragiles et une conformité inexistante. Ça ne devrait pas être le cas.
 
-**Sen'Analytics** intervient à deux niveaux :
+**XamXam Graph** intervient à deux niveaux :
 
 - **Audit de pipeline** — On analyse votre ingestion actuelle, on score votre conformité CDP, on vous donne une feuille de route chiffrée.
 - **Medallion-as-Code** — On déploie votre infrastructure de données clé-en-main, avec gouvernance Unity Catalog et conformité intégrée.
 
 <p align="center">
-  <a href="https://senanalytics.sn">
+  <a href="https://xamxamgraph.com">
     <strong>🌐 Planifier un Diagnostic d'Architecture →</strong>
   </a>
 </p>
 
 ---
 
-*Ibrahim Faye est le fondateur de Sen'Analytics, un studio d'architecture de données basé à Dakar et Montréal, spécialisé dans les pipelines Medallion sur Azure Databricks et l'IA agentique pour l'infrastructure de données en Afrique de l'Ouest.*
+*Ibrahim Faye est le fondateur de XamXam Graph, un studio d'architecture de données basé à Dakar et Montréal, spécialisé dans les pipelines Medallion sur Azure Databricks et l'IA agentique pour l'infrastructure de données en Afrique de l'Ouest.*

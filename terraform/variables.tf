@@ -55,6 +55,6 @@ variable "tags" {
     Project     = "Orange Money Pipeline"
     ManagedBy   = "Terraform"
     Environment = "dev"
-    Owner       = "SenAnalytics"
+    Owner       = "XamXam Graph"
   }
 }

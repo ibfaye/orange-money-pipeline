@@ -13,7 +13,7 @@ Databricks Runtime: 14.3 LTS or later
 
 # COMMAND ----------
 import sys
-sys.path.append("/Workspace/Repos/senanalytics/orange-money-pipeline/src")
+sys.path.append("/Workspace/Repos/xamxamgraph/orange-money-pipeline/src")
 
 from datetime import datetime
 from pyspark.sql import SparkSession
